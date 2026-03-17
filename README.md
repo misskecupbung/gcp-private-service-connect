@@ -12,8 +12,6 @@ By default, when your VMs call Google APIs (Cloud Storage, BigQuery, Pub/Sub), t
 - DNS override that resolves googleapis.com to your private IP
 - Works for all Google APIs (Storage, BigQuery, Pub/Sub, etc.)
 
----
-
 ## Architecture
 
 
@@ -34,8 +32,6 @@ test-vm → 10.1.0.100 (private) → storage.googleapis.com
 - GCP account with billing enabled
 - `gcloud` CLI installed and authenticated
 - Terraform >= 1.0
-
----
 
 ## Deploy
 
@@ -88,8 +84,6 @@ You'll see:
 - `test_vm_internal_ip` - IP of test-vm
 - `psc_endpoint_ip` - Private endpoint (10.1.0.100)
 
----
-
 ## Verify
 
 ### 1. Check DNS Resolution
@@ -139,8 +133,6 @@ nslookup storage.googleapis.com
 nslookup storage.googleapis.com 8.8.8.8
 ```
 
----
-
 ## How It Works
 
 1. **PSC Endpoint** - A forwarding rule that creates a private IP (10.1.0.100) pointing to Google APIs
@@ -149,8 +141,6 @@ nslookup storage.googleapis.com 8.8.8.8
 
 3. **Traffic Flow** - When test-vm calls any Google API, DNS returns 10.1.0.100, and traffic routes privately
 
----
-
 ## Cleanup
 
 ```bash
@@ -158,14 +148,10 @@ cd terraform
 terraform destroy
 ```
 
----
-
 ## Resources
 
 - [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect)
 - [Configure PSC for Google APIs](https://cloud.google.com/vpc/docs/configure-private-service-connect-apis)
-
----
 
 ## License
 
