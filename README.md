@@ -14,19 +14,6 @@ By default, when your VMs call Google APIs (Cloud Storage, BigQuery, Pub/Sub), t
 
 ## Architecture
 
-
-**Without PSC:**
-```
-test-vm → public internet → storage.googleapis.com (142.250.x.x)
-```
-
-**With PSC:**
-```
-test-vm → 10.1.0.100 (private) → storage.googleapis.com
-```
-
----
-
 ## Prerequisites
 
 - GCP account with billing enabled
@@ -68,10 +55,11 @@ terraform apply
 ```
 
 Terraform creates:
-- 1 VPC with subnet
+- 1 VPC with subnet (`10.1.0.0/24`)
 - 1 test VM (no public IP)
-- Private Service Connect endpoint for Google APIs
-- Private DNS zone (routes *.googleapis.com to PSC endpoint)
+- Cloud Router + Cloud NAT (for startup script package installation)
+- Private Service Connect endpoint for Google APIs (`10.1.0.100`)
+- Private DNS zone (routes `*.googleapis.com` + specific records to PSC endpoint)
 - Firewall rules for IAP SSH
 
 ### Step 3: Check Outputs
