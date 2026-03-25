@@ -78,16 +78,21 @@ resource "google_compute_instance" "test_vm" {
 # PSC for Google API bundles (all-apis, vpc-sc) requires a GLOBAL address
 # and a GLOBAL forwarding rule. Regional forwarding rules are not supported
 # for these targets.
+# IMPORTANT: the PSC IP must NOT be within any subnet CIDR in the VPC.
+# Using 10.8.0.2 which is outside the subnet-main range (10.1.0.0/24).
 resource "google_compute_global_address" "psc_address" {
   name          = "psc-google-apis-ip"
   address_type  = "INTERNAL"
   purpose       = "PRIVATE_SERVICE_CONNECT"
   network       = google_compute_network.vpc_main.id
-  address       = "10.1.0.100"
+  address       = "10.8.0.2"
 }
 
+# IMPORTANT: PSC forwarding rule names for Google API bundles (all-apis, vpc-sc)
+# must be 1-20 characters, lowercase letters and numbers only, starting with a letter.
+# Hyphens are NOT allowed.
 resource "google_compute_global_forwarding_rule" "psc_google_apis" {
-  name                  = "psc-google-apis"
+  name                  = "pscapis"
   network               = google_compute_network.vpc_main.id
   ip_address            = google_compute_global_address.psc_address.id
   target                = "all-apis"
