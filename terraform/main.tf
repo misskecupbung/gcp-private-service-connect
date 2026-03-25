@@ -75,19 +75,21 @@ resource "google_compute_instance" "test_vm" {
 # -----------------------------------------------------------------------------
 # Private Service Connect - Google APIs
 # -----------------------------------------------------------------------------
-resource "google_compute_address" "psc_address" {
-  name         = "psc-google-apis-ip"
-  region       = var.region
-  subnetwork   = google_compute_subnetwork.subnet_main.id
-  address_type = "INTERNAL"
-  address      = "10.1.0.100"
+# PSC for Google API bundles (all-apis, vpc-sc) requires a GLOBAL address
+# and a GLOBAL forwarding rule. Regional forwarding rules are not supported
+# for these targets.
+resource "google_compute_global_address" "psc_address" {
+  name          = "psc-google-apis-ip"
+  address_type  = "INTERNAL"
+  purpose       = "PRIVATE_SERVICE_CONNECT"
+  network       = google_compute_network.vpc_main.id
+  address       = "10.1.0.100"
 }
 
-resource "google_compute_forwarding_rule" "psc_google_apis" {
+resource "google_compute_global_forwarding_rule" "psc_google_apis" {
   name                  = "psc-google-apis"
-  region                = var.region
   network               = google_compute_network.vpc_main.id
-  ip_address            = google_compute_address.psc_address.id
+  ip_address            = google_compute_global_address.psc_address.id
   target                = "all-apis"
   load_balancing_scheme = ""
 }
@@ -113,7 +115,7 @@ resource "google_dns_record_set" "storage_googleapis" {
   managed_zone = google_dns_managed_zone.googleapis_private.name
   type         = "A"
   ttl          = 300
-  rrdatas      = [google_compute_address.psc_address.address]
+  rrdatas      = [google_compute_global_address.psc_address.address]
 }
 
 resource "google_dns_record_set" "bigquery_googleapis" {
@@ -121,7 +123,7 @@ resource "google_dns_record_set" "bigquery_googleapis" {
   managed_zone = google_dns_managed_zone.googleapis_private.name
   type         = "A"
   ttl          = 300
-  rrdatas      = [google_compute_address.psc_address.address]
+  rrdatas      = [google_compute_global_address.psc_address.address]
 }
 
 resource "google_dns_record_set" "pubsub_googleapis" {
@@ -129,7 +131,7 @@ resource "google_dns_record_set" "pubsub_googleapis" {
   managed_zone = google_dns_managed_zone.googleapis_private.name
   type         = "A"
   ttl          = 300
-  rrdatas      = [google_compute_address.psc_address.address]
+  rrdatas      = [google_compute_global_address.psc_address.address]
 }
 
 resource "google_dns_record_set" "wildcard_googleapis" {
@@ -137,7 +139,7 @@ resource "google_dns_record_set" "wildcard_googleapis" {
   managed_zone = google_dns_managed_zone.googleapis_private.name
   type         = "A"
   ttl          = 300
-  rrdatas      = [google_compute_address.psc_address.address]
+  rrdatas      = [google_compute_global_address.psc_address.address]
 }
 
 # -----------------------------------------------------------------------------

@@ -4,9 +4,6 @@ Access Google APIs through private endpoints instead of routing through the publ
 
 By default, when your VMs call Google APIs (Cloud Storage, BigQuery, Pub/Sub), traffic goes out to public IP addresses. Private Service Connect (PSC) creates a private endpoint inside your VPC, so API calls stay within Google's network.
 
-> **Duration**: 30 minutes  
-> **Level**: Intermediate
-
 **What you'll build:**
 - Private endpoint for Google APIs inside your VPC
 - DNS override that resolves googleapis.com to your private IP
