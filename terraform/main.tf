@@ -48,6 +48,20 @@ resource "google_compute_firewall" "allow_iap" {
 }
 
 # -----------------------------------------------------------------------------
+# Service Account for test VM
+# -----------------------------------------------------------------------------
+resource "google_service_account" "test_vm_sa" {
+  account_id   = "test-vm-sa"
+  display_name = "Test VM Service Account"
+}
+
+resource "google_project_iam_member" "test_vm_storage_viewer" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.test_vm_sa.email}"
+}
+
+# -----------------------------------------------------------------------------
 # Test VM
 # -----------------------------------------------------------------------------
 resource "google_compute_instance" "test_vm" {
@@ -65,6 +79,11 @@ resource "google_compute_instance" "test_vm" {
     network    = google_compute_network.vpc_main.id
     subnetwork = google_compute_subnetwork.subnet_main.id
     # No external IP - all traffic through private endpoints
+  }
+
+  service_account {
+    email  = google_service_account.test_vm_sa.email
+    scopes = ["cloud-platform"]
   }
 
   metadata_startup_script = file("${path.module}/../scripts/startup-test.sh")

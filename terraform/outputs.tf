@@ -17,3 +17,8 @@ output "dns_zone_name" {
   description = "Private DNS zone name"
   value       = google_dns_managed_zone.googleapis_private.name
 }
+
+output "test_vm_service_account" {
+  description = "Service account email attached to test-vm"
+  value       = google_service_account.test_vm_sa.email
+}
