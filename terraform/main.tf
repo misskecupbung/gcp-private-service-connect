@@ -89,6 +89,8 @@ resource "google_compute_instance" "test_vm" {
   metadata_startup_script = file("${path.module}/../scripts/startup-test.sh")
 
   tags = ["test-server"]
+
+  allow_stopping_for_update = true
 }
 
 # -----------------------------------------------------------------------------
