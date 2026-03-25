@@ -10,7 +10,7 @@ output "test_vm_internal_ip" {
 
 output "psc_endpoint_ip" {
   description = "Private Service Connect endpoint IP"
-  value       = google_compute_address.psc_address.address
+  value       = google_compute_global_address.psc_address.address
 }
 
 output "dns_zone_name" {
