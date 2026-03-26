@@ -13,32 +13,7 @@ By default, when your VMs call Google APIs (Cloud Storage, BigQuery, Pub/Sub), D
 
 ## Architecture
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│  VPC Network vpc-main (10.1.0.0/24)                           │
-│                                                               │
-│  ┌──────────────┐                                             │
-│  │   test-vm    │                                             │
-│  │  10.1.0.x    │                                             │
-│  │  (no ext IP) │                                             │
-│  └───────┬──────┘                                             │
-│          │                                                    │
-│          │ DNS: storage.googleapis.com → 10.8.0.2             │
-│          ▼                                                    │
-│  ┌───────────────────────────────────┐                        │
-│  │ Private Service Connect Endpoint  │                        │
-│  │ IP: 10.8.0.2 (outside subnet)     │                        │
-│  │ Target: all-apis                  │                        │
-│  └───────────────┬───────────────────┘                        │
-└──────────────────┼────────────────────────────────────────────┘
-                   │ Private link
-                   ▼
-         ┌──────────────────────┐
-         │  Google APIs Backend │
-         │  Storage, BigQuery,  │
-         │  Pub/Sub, etc.       │
-         └──────────────────────┘
-```
+![image](img/gcp-private-service-connect-arch.png)
 
 ## Prerequisites
 
