@@ -120,17 +120,6 @@ Expected: `Hello from Private Service Connect`
 
 The VM has no external IP. Traffic reaches Cloud Storage only through the PSC endpoint at `10.8.0.2`.
 
-### 3. Why traceroute shows all `* * *` for PSC
-
-```bash
-gcloud compute ssh test-vm \
-  --zone=us-central1-a \
-  --tunnel-through-iap \
-  --command="traceroute -n 10.8.0.2"
-```
-
-All `* * *` is expected. PSC endpoints are virtual constructs in Google's SDN fabric — they drop all ICMP/UDP probes and only forward TCP port 443. Use DNS resolution + a successful API call to verify PSC is working, not traceroute.
-
 ## Key Implementation Notes
 
 **PSC for Google API bundles requires global resources:**
